@@ -1,5 +1,7 @@
 If you are using mac you need to change `sudo apt` to `brew`
 
+########### Install Mongodb ###############
+
 sudo apt-get install gnupg
 
 curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
@@ -35,11 +37,13 @@ sudo systemctl daemon-reload
 
 sudo systemctl status mongod
 
-Run shell
+#open mongodb shell it will accept the mongodb commands
 
 mongosh
 
-########## simple practice operations in shell #################
+#press ctrl+z to exit the shell
+
+########## Following are simple practice operations/command to execute in shell #################
 
 1. Command to list already existing mongodb databases
     `show dbs`
@@ -133,7 +137,7 @@ python3 -m venv ~/path/of/choice/env-name-of-choice
 
 source above_path/bin/activate
 
-python manage.py 
+python manage.py
 
 Change the code of mongo_operations function in following file, to add/modify operations
 
