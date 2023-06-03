@@ -85,6 +85,8 @@ mongosh
 
 
 
+To run this application, install following. But if you face any error at any step while installation, google it, you might need to install some ubuntu package as pre-requisite.
+Also you can sign in to github and open an issue here https://github.com/humblesami/djangomongo/issues I will try to respond it asap.
 
 ###################################
 
@@ -102,15 +104,10 @@ sudo apt update
 
 sudo apt install python3.8
 
-######## Install virtual env #######
+######## Install compulsory utils #######
 
 sudo apt install python3-venv
-
-python3 -m venv ~/path/of/choice/env-name-of-choice
-
-// let above_path=~/path/of/choice/env-name-of-choice
-
-source above_path/bin/activate
+sudo apt install python3-pip
 
 ############ Install required packages ##########
 
@@ -126,6 +123,17 @@ drf-yasg=1.21.5
 
 ######################################
 
+git clone To https://github.com/humblesami/djangomongo.git
+
+cd djangomongo
+
+python3 -m venv ~/path/of/choice/env-name-of-choice
+
+// let above_path=~/path/of/choice/env-name-of-choice
+
+source above_path/bin/activate
+
+python manage.py 
 
 Change the code of mongo_operations function in following file, to add/modify operations
 
