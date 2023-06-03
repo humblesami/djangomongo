@@ -137,7 +137,13 @@ python3 -m venv ~/path/of/choice/env-name-of-choice
 
 source above_path/bin/activate
 
-python manage.py
+python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py runserver
+
+open http://127.0.0.1:8000/
 
 Change the code of mongo_operations function in following file, to add/modify operations
 
