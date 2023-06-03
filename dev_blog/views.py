@@ -1,36 +1,50 @@
-from rest_framework.viewsets import ModelViewSet
-from django.utils.decorators import method_decorator
-from drf_yasg.utils import swagger_auto_schema
+import os
 
-from dev_blog.serializers import BlogSerializer, PostSerializer
-from dev_blog.models import Blog, Post
+from pymongo import MongoClient
+from django.http import HttpResponse
 
 
-@method_decorator(name='list', decorator=swagger_auto_schema(operation_description='Get List of Blogs'))
-class BlogViewSet(ModelViewSet):
-    queryset = Blog.objects.all()
-    serializer_class = BlogSerializer
-
-    def get_queryset(self):
-        return self.queryset
-
-
-@method_decorator(name='list', decorator=swagger_auto_schema(query_serializer=PostSerializer.param_serializer))
-class PostViewSet(ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    param_serializer = PostSerializer.param_serializer
-
-    def get_queryset(self):
-        query_params = self.request.query_params.copy()
-        print(query_params)
-        if 'publish_status' in query_params:
-            query_params['publish_status'] = 'published' if query_params['publish_status'] == 'true' else 'draft'
-        param_dict = {'user': 'author', 'blog': 'blog_id',
-                      'publish_status': 'status'}
-        filters = {}
-        for key, value in query_params.items():
-            if key in param_dict:
-                filters[param_dict.get(key)] = value
-
-        return self.queryset.filter(**filters)
+def mongo_operations(request):
+    
+    my_client = MongoClient()
+    # First define the database name
+    dbname = my_client['sample_medicines']
+    collection_name = dbname["medicinedetails"]
+    
+    # let's create two documents
+    medicine_1 = {
+        "medicine_id": "RR000123456",
+        "common_name": "Paracetamol",
+        "scientific_name": "",
+        "available": "Y",
+        "category": "fever"
+    }
+    medicine_2 = {
+        "medicine_id": "RR000342522",
+        "common_name": "Metformin",
+        "scientific_name": "",
+        "available": "Y",
+        "category": "type 2 diabetes"
+    }
+    # Insert the documents
+    collection_name.insert_many([medicine_1, medicine_2])
+    # Check the count
+    count = collection_name.count()
+    print(count)
+    
+    # Read the documents
+    med_details = collection_name.find({})
+    # Print on the terminal
+    for r in med_details:
+        print(r["common_name"])
+    # Update one document
+    data_to_update = {'medicine_id': 'RR000123456'}, {'$set': {'common_name': 'Paracetamol 500'}}
+    update_data = collection_name.update_one(data_to_update)
+    
+    # Delete one document
+    delete_data = collection_name.delete_one({'medicine_id': 'RR000123456'})
+    med_details = collection_name.find({})
+    # Print on the terminal
+    for r in med_details:
+        print(r["common_name"])
+    return HttpResponse('done')

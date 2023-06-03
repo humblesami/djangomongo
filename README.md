@@ -1,152 +1,143 @@
+If you are using mac you need to change `sudo apt` to `brew`
 
-# BLOG application - Django Rest with MongoDB Atlas
+sudo apt-get install gnupg
 
-This project is used to demonstrate usage of Django restframework along with NoSQL 
-Mongo DB. MongoDB Atlas is a fully managed cloud database which provides database-as-a-service
-on the cloud provider of your choice (AWS, Azure & Google). Here I have selected AWS cloud
-provider. 
-This Blog application showcase simple CRUD operations using django rest and mongo db
+curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
 
+sudo touch /etc/apt/sources.list.d/mongodb-org-6.0.list
 
-## MongoDB Atlas
-You can create free MongoDB Cluster in [Atlas](https://www.mongodb.com/cloud/atlas) and use for your trial application.
-You will find various useful blogs which describes the cluster creation and usage of same.
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 
+sudo apt-get update
 
-### Libraries used:
-    Python 3.8
-    Django 3
-    Django Restframework
-    Djongo - for MongoDB Integration
-    MongoDB Atlas cloud cluster (4.2.3)
-    drf-yasg - Swagger generator
+sudo apt-get install -y mongodb-org
 
 
-### Set up Virtual Environment
-Create Virtual environment
+echo "mongodb-org hold" | sudo dpkg --set-selections1
 
-`python -m venv env`
+echo "mongodb-org-database hold" | sudo dpkg --set-selections
 
-Then activate the virtual enviornment
+echo "mongodb-org-server hold" | sudo dpkg --set-selections
 
-In Linux
+echo "mongodb-mongosh hold" | sudo dpkg --set-selections
 
-`source env/bin/activate`
+echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
 
-In windows
+echo "mongodb-org-tools hold" | sudo dpkg --set-selections
 
-`cd env/Scripts`
+ps --no-headers -o comm 1
 
-`activate`
+sudo systemctl enable mongod
 
-To deactivate the virtual environment
+sudo systemctl start mongod
 
-`deactivate`
+sudo systemctl daemon-reload
 
+sudo systemctl status mongod
 
-### Install Libraries
+Run shell
 
-Use below command to install all required libraries in your virtual env
+mongosh
 
-    pip install -r requirements.txt
+########## simple practice operations in shell #################
 
-
-### Mongo DB Setup
-
-Change your settings.py file to setup Mongo DB:
-
-    
-    DATABASES = {
-        'default': {
-        'ENGINE': 'djongo',
-        'NAME': <db_name>,
-        'HOST': 'mongodb+srv://<your_atlas_connect_url>',
-        'USER': <username>,
-        'PASSWORD': <password>,
-        }
-    }
-    
-
-
-Run below commands to check the Mongo DB Atlas connection:
-
-`python manage.py makemigrations` and `python manage.py migrate`
-
-
-If you see DB connection error like `pymongo.errors.ServerSelectionTimeoutError: localhost:27017` then
-you might need to tweak below change in pymongo/mongo_client.py as there is still bug 
-in current version of djongo (1.3.1). Instead of connecting to passed HOST in Database settings 
-it always tries to connect to localhost.
-
-1) yourvirtualenvfolder/lib/site-packages/pymongo/mongo_client.py
-
-2) Search for this part of code:
-    ```
-   class MongoClient(common.BaseObject):
-        HOST = "localhost"
-        PORT = 27017
-   ```
-3) Substitute "localhost" with your SRV address, for example:
-    ```
-    class MongoClient(common.BaseObject):
-        HOST = "mongodb+srv://dnsServerName/test"
-        PORT = 27017
-   ```
-4) Save the file, run migrations again and you're connected to MongoDB Atlas.
-
-And,
-if you see this error `pymongo.errors.ServerSelectionTimeoutError: connection closed,connection closed` then
-please cross check if your System IP address is whitelisted in MongoDB Atlas or not.
-
-
-### Run application
-Use below command to run your django application
-
-    python manage.py runserver 8080
-
-
-### Django Admin
-You can use below url to access django admin. It is very user friendly interface
-using which you can create, update and delete model objects.
-
-    admin url: http://localhost:8080/admin/
-    
-![Blog Admin](static/django_admin.PNG)
+1. Command to list already existing mongodb databases
+    `show dbs`
+2. Command to create and use new mongodb databases
+    `use samdb1`
+3. Command to get name of current database
+    `db`
+4. Command to drop current database
+    `db.dropDatabase()`
+5. list the tables of current database
+    `Show collections`
+6. insert (also creates table if not exists)
+    `db.employees.insert({'name': 'admin': 'address': 'riphah'})`
+8. select all records of a collection(table)
+    `db.employees.find()`
+7. drop table
+    `db.employees.drop()`
+9. insert many
+    `db.comments.insertMany([{
+        'name': 'Harry',
+        'lang': 'JavaScript',
+        'member_since': 5
+        },
+        {'name': 'Rohan',
+        'lang': 'Python',
+        'member_since': 3
+        },
+        {'name': 'Lovish',
+        'lang': 'Java',
+        'member_since': 4
+    }])`
+10. find where
+    `db.comments.find({lang:'Python'})`
+11. update
+    `db.comments.updateOne({name: 'Shubham'},{$set: {'name': 'Harry',
+        'lang': 'JavaScript',
+        'member_since': 51
+    }}, {upsert: true})`
+12. alter table
+    `db.comments.update({name: 'Rohan'},{$rename:{ member_since: 'member'}})`
+13. Delete
+    `db.comments.remove({name: 'Harry'})`
 
 
 
-## APIs and Documentation
 
-### Blog service
+###################################
 
-This service is used to get information about a blog. It provides blog name, title and 
-owner of the blog.
+Install Python3
 
-    url: http://localhost:8080/dev-blog/blog/
+###################################
 
-You can lookup all blogs, blog by id (pk), you can create new blog, update, partial update and
-delete a blog. You can get more details in swagger:
+sudo apt update
 
-    Swagger url: http://localhost:8080/swagger/
+sudo apt install software-properties-common
 
-Note: Please specify the port on which you are running your application
+sudo add-apt-repository ppa:deadsnakes/ppa
 
-![Blog Swagger](static/blog_swagger.PNG)
+sudo apt update
+
+sudo apt install python3.8
+
+######## Install virtual env #######
+
+sudo apt install python3-venv
+
+python3 -m venv ~/path/of/choice/env-name-of-choice
+
+// let above_path=~/path/of/choice/env-name-of-choice
+
+source above_path/bin/activate
+
+############ Install required packages ##########
+
+pip install -r requirements.txt
+
+pymongo==3.12.1
+
+djongo==1.3.6
+
+Django==4.1.9
+
+drf-yasg=1.21.5
+
+######################################
 
 
-### Blog Post Service
+Change the code of mongo_operations function in following file, to add/modify operations
 
-This service is used to get information about a blog posts. It provides post title, author,
-content of the post etc.
-
-You can lookup all blog posts, post by id (pk), you can create new post, update, partial update and
-delete a post for any blog. 
-
-![Blog Swagger](static/post_swagger.PNG)
+dev_blog/views.py
 
 
-### Data in MongoDB Atlas
+Uninstall Mongo
 
-Once you perform few CRUD operations, you can check data in MongoDB Atlas
+sudo service mongod stop
 
-![MongoDB Atlas](static/mongo_atlas.PNG)
+sudo apt-get purge mongodb-org*
+
+sudo rm -r /var/log/mongodb
+
+sudo rm -r /var/lib/mongodb

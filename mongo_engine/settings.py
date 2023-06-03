@@ -33,8 +33,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'dev_blog',
-    'rest_framework',
-    'drf_yasg',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,12 +76,13 @@ WSGI_APPLICATION = 'mongo_engine.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-        'default': {
+    'default': {
         'ENGINE': 'djongo',
-        'NAME': <db_name>,
-        'HOST': 'mongodb+srv://<your_atlas_connect_url>',
-        'USER': <username>,
-        'PASSWORD': <password>,
+        'NAME': 'sample_medicines',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': 27017,  # default MongoDB port
+        # 'USERNAME': 'your_username',
+        # 'PASSWORD': 'your_password',
     }
 }
 
